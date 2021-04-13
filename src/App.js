@@ -7,6 +7,8 @@ import Rank from './components/Rank/Rank';
 import Particles from 'react-particles-js';
 import ImageViewer from './components/ImageViewer/ImageViewer';
 import Clarifai from 'clarifai'
+import SignIn from './components/SignIn/SignIn';
+import Register from './components/Register/Register';
 
 // Clarifai
 const app = new Clarifai.App({
@@ -37,6 +39,9 @@ function App() {
   const [input, setInput] = useState('')
   const [url, setUrl] = useState('')
   const [box, setBox] = useState({})
+
+  const [route, setRoute] = useState('signin')
+  const [isSignedIn, setIsSignedIn] = useState(false)
 
   // Input
   const handleInputChange = (e) => {
@@ -69,22 +74,39 @@ function App() {
       .catch(error => console.log(error))
   }
 
+  // Route
+  const handleRouteChange = (route) => {
+    route === 'home' ? setIsSignedIn(true) : setIsSignedIn(false)
+    setRoute(route)
+  }
+
   return (
     <div>
       <Particles className='particles'
         params={particleParams}
       />
-      <Navigation />
-      <Logo />
-      <Rank />
-      <ImageLinkForm
-        inputChange={handleInputChange}
-        buttonSubmit={handleButtonSubmit}
-      />
-      <ImageViewer
-        urlChange={url}
-        box={box}
-      />
+      <Navigation routeChange={handleRouteChange} isSignedIn={isSignedIn} />
+      {
+        route === 'home' ?
+          <div>
+            <Logo />
+            <Rank />
+            <ImageLinkForm
+              inputChange={handleInputChange}
+              buttonSubmit={handleButtonSubmit}
+            />
+            <ImageViewer
+              urlChange={url}
+              box={box}
+            />
+          </div>
+          :
+          (
+            route === 'signin' ?
+              <SignIn routeChange={handleRouteChange} />
+              : <Register routeChange={handleRouteChange} />
+          )
+      }
     </div>
   );
 }
