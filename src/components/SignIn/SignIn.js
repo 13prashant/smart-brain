@@ -1,4 +1,28 @@
-const SignIn = ({ routeChange }) => {
+import { useState } from 'react'
+
+const SignIn = ({ routeChange, loadUser }) => {
+
+    const [signInEmail, setSignInEmail] = useState('')
+    const [signInPassword, setSignInPassword] = useState('')
+
+    const handleOnSubmit = () => {
+        fetch('http://localhost:5000/signin', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: signInEmail,
+                password: signInPassword
+            })
+        })
+            .then(response => response.json())
+            .then(user => {
+                if (user.id) {
+                    loadUser(user)
+                    routeChange('home')
+                }
+            })
+    }
+
     return (
         <div>
             <article className="br2 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw5 center">
@@ -7,17 +31,29 @@ const SignIn = ({ routeChange }) => {
                         <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
                             <legend className="f4 fw6 ph0 mh0">Sign In</legend>
                             <div className="mt3">
-                                <label className="db fw6 lh-copy f6" for="email-address">Email</label>
-                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address" id="email-address" />
+                                <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
+                                <input
+                                    onChange={(e) => setSignInEmail(e.target.value)}
+                                    className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                                    type="email"
+                                    name="email-address"
+                                    id="email-address"
+                                />
                             </div>
                             <div className="mv3">
-                                <label className="db fw6 lh-copy f6" for="password">Password</label>
-                                <input className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password" />
+                                <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
+                                <input
+                                    onChange={(e) => setSignInPassword(e.target.value)}
+                                    className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                />
                             </div>
                         </fieldset>
                         <div className="">
                             <input
-                                onClick={() => routeChange('home')}
+                                onClick={handleOnSubmit}
                                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                                 type="submit" value="Sign in"
                             />

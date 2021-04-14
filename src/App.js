@@ -43,6 +43,26 @@ function App() {
   const [route, setRoute] = useState('signin')
   const [isSignedIn, setIsSignedIn] = useState(false)
 
+  const [user, setUser] = useState({
+    id: '',
+    name: '',
+    email: '',
+    entries: '',
+    joined: ''
+  })
+
+  console.log(user)
+
+  const handleLoadUser = (data) => {
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    })
+  }
+
   // Input
   const handleInputChange = (e) => {
     setInput(e.target.value)
@@ -70,7 +90,22 @@ function App() {
   const handleButtonSubmit = () => {
     setUrl(input)
     app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
-      .then(data => boxDisplay(faceBoxCalculation(data)))
+      .then(response => {
+        if (response) {
+          fetch('http://localhost:5000/image', {
+            method: 'put',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: user.id
+            })
+          })
+            .then(response => response.json())
+            .then(count => {
+              setUser({ ...user, entries: count })
+            })
+        }
+        boxDisplay(faceBoxCalculation(response))
+      })
       .catch(error => console.log(error))
   }
 
@@ -90,7 +125,9 @@ function App() {
         route === 'home' ?
           <div>
             <Logo />
-            <Rank />
+            <Rank
+              user={user}
+            />
             <ImageLinkForm
               inputChange={handleInputChange}
               buttonSubmit={handleButtonSubmit}
@@ -103,8 +140,14 @@ function App() {
           :
           (
             route === 'signin' ?
-              <SignIn routeChange={handleRouteChange} />
-              : <Register routeChange={handleRouteChange} />
+              <SignIn
+                routeChange={handleRouteChange}
+                loadUser={handleLoadUser}
+              />
+              : <Register
+                routeChange={handleRouteChange}
+                loadUser={handleLoadUser}
+              />
           )
       }
     </div>
