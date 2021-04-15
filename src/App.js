@@ -51,7 +51,10 @@ function App() {
     joined: ''
   })
 
-  console.log(user)
+  const clearState = () => {
+    setInput('')
+    setUrl('')
+  }
 
   const handleLoadUser = (data) => {
     setUser({
@@ -87,6 +90,7 @@ function App() {
   }
 
   // Button
+
   const handleButtonSubmit = () => {
     setUrl(input)
     app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
@@ -103,6 +107,7 @@ function App() {
             .then(count => {
               setUser({ ...user, entries: count })
             })
+            .catch(err => console.log(err))
         }
         boxDisplay(faceBoxCalculation(response))
       })
@@ -113,6 +118,7 @@ function App() {
   const handleRouteChange = (route) => {
     route === 'home' ? setIsSignedIn(true) : setIsSignedIn(false)
     setRoute(route)
+    clearState()
   }
 
   return (
