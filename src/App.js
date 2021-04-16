@@ -6,23 +6,21 @@ import Navigation from './components/Navigation/Navigation';
 import Rank from './components/Rank/Rank';
 import Particles from 'react-particles-js';
 import ImageViewer from './components/ImageViewer/ImageViewer';
-import Clarifai from 'clarifai'
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
 
-// Clarifai
-const app = new Clarifai.App({
-  apiKey: 'a65987dcb24a4d79bd58e3436249d61c'
-})
+
 
 // Particles
 const particleParams = {
   particles: {
     number: {
-      value: 70
+      value: 80
     },
     size: {
       value: 1
+    }, move: {
+      speed: 1
     }
   },
   interactivity: {
@@ -90,10 +88,16 @@ function App() {
   }
 
   // Button
-
   const handleButtonSubmit = () => {
     setUrl(input)
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, input)
+    fetch('http://localhost:5000/imageurl', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: input
+      })
+    })
+      .then(response => response.json())
       .then(response => {
         if (response) {
           fetch('http://localhost:5000/image', {
