@@ -7,7 +7,7 @@ const Register = ({ routeChange, loadUser }) => {
     const [password, setPassword] = useState('')
 
     const handleOnRegister = () => {
-        fetch('http://localhost:5000/register', {
+        fetch('https://thawing-fortress-73854.herokuapp.com/register', {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

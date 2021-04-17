@@ -9,8 +9,6 @@ import ImageViewer from './components/ImageViewer/ImageViewer';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
 
-
-
 // Particles
 const particleParams = {
   particles: {
@@ -90,7 +88,7 @@ function App() {
   // Button
   const handleButtonSubmit = () => {
     setUrl(input)
-    fetch('http://localhost:5000/imageurl', {
+    fetch('https://thawing-fortress-73854.herokuapp.com/imageurl', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -100,7 +98,7 @@ function App() {
       .then(response => response.json())
       .then(response => {
         if (response) {
-          fetch('http://localhost:5000/image', {
+          fetch('https://thawing-fortress-73854.herokuapp.com/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
